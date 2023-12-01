@@ -7,10 +7,4 @@ sealed class TaskListEvent extends Equatable {
   List<Object> get props => [];
 }
 
-final class FeatchTaskList extends TaskListEvent {
-  final int uID;
-  const FeatchTaskList({required this.uID});
-
-  @override
-  List<Object> get props => [uID];
-}
+final class FeatchTaskList extends TaskListEvent {}

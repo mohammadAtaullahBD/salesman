@@ -57,6 +57,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Future.delayed(Duration.zero, () {
+      BlocProvider.of<UserBloc>(context).add(FetchPreviousIfAvailableEvent());
+    });
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(

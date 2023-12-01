@@ -8,9 +8,5 @@ sealed class UserLocationEvent extends Equatable {
 }
 
 class FetchUserLocation extends UserLocationEvent {
-  final User user;
-  const FetchUserLocation({required this.user});
-
-  @override
-  List<Object> get props => [user];
+  const FetchUserLocation();
 }

@@ -5,6 +5,11 @@ class DrawerWidget extends StatelessWidget {
     super.key,
   });
 
+  Future<String> _getID() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('userName')!;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -33,13 +38,20 @@ class DrawerWidget extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 20),
-                Text(
-                  user!.name,
-                  style: const TextStyle(
-                    color: Color(0xFF4cb97e),
-                    fontSize: 18,
-                  ),
-                ),
+                FutureBuilder(
+                    future: _getID(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        return Text(
+                          snapshot.data!,
+                          style: const TextStyle(
+                            color: Color(0xFF4cb97e),
+                            fontSize: 18,
+                          ),
+                        );
+                      }
+                      return const Text('');
+                    })
               ],
             ),
           ),

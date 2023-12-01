@@ -7,9 +7,20 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   final UserRepository _userRepository = UserRepository();
   UserBloc() : super(UserInitialState()) {
     on<UserEvent>((event, emit) async {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      if (event is FetchPreviousIfAvailableEvent) {
+        int? preUserID = prefs.getInt('userID');
+        if (preUserID != null) {
+          emit(UserLoadedState(userID: preUserID));
+        }
+      }
       if (event is ResetUserEvent) {
+        stopForegroundService();
+        prefs.remove('userID');
+        prefs.remove('userName');
         emit(UserInitialState());
       }
+      // if(event is Us)
       if (event is FetchUserEvent) {
         try {
           String deviceId = await getDeviceId() ?? 'Unable device ID';
@@ -18,9 +29,9 @@ class UserBloc extends Bloc<UserEvent, UserState> {
             password: event.password,
             deviceID: deviceId,
           );
-          SharedPreferences prefs = await SharedPreferences.getInstance();
           prefs.setInt('userID', user.id);
-          emit(UserLoadedState(user: user));
+          prefs.setString('userName', user.name);
+          emit(UserLoadedState(userID: user.id));
         } catch (error) {
           emit(UserErrorState(error: DateTime.now().toString()));
         }

@@ -21,8 +21,8 @@ class ShopsRepository {
     }
   }
 
-  Future<List<Shop>> getShops({required String date}) async {
-    Response res = await get(Uri.parse('$dbUrl/find-task/${user!.id}/$date'));
+  Future<List<Shop>> getShops({required String date, required int id}) async {
+    Response res = await get(Uri.parse('$dbUrl/api/find-task/$id/$date'));
     if (res.statusCode == 200) {
       List result = jsonDecode(res.body)['task'];
       return result.map((element) => Shop.fromJson(element)).toList();

@@ -1,7 +1,6 @@
 import 'package:apps/utils/importer.dart';
 
 const String dbUrl = 'https://salesman.ipsitacomputersltd.com';
-User? user;
 
 const Color primaryColor = Color(0xFF4BBA7E);
 const Color secondaryColor = Color(0xFFDF8680);

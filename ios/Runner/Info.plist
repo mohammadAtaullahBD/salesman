@@ -46,6 +46,11 @@
 		<key>UIApplicationSupportsIndirectInputEvents</key>
 		<true />
 		<!-- geolocator -->
+		<!-- Permission options for the 'location' group -->
+		<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+		<string>Always and when in use!</string>
+		<key>NSLocationUsageDescription</key>
+		<string>Older devices need location.</string>
 		<key>NSLocationWhenInUseUsageDescription</key>
 		<string>Your location is needed for our services</string>
 		<key>NSLocationAlwaysUsageDescription</key>

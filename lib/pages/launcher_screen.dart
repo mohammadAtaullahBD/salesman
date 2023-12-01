@@ -10,14 +10,9 @@ class LauncherScreen extends StatelessWidget {
       buildWhen: (previous, current) => previous != current,
       builder: (context, state) {
         if (state is UserLoadedState) {
-          // The global user is inatialized here
-          user = state.user;
-          BlocProvider.of<UserLocationBloc>(context).add(FetchUserLocation(
-            user: state.user,
-          ));
-          BlocProvider.of<TaskListBloc>(context).add(FeatchTaskList(
-            uID: state.user.id,
-          ));
+          BlocProvider.of<UserLocationBloc>(context)
+              .add(const FetchUserLocation());
+          BlocProvider.of<TaskListBloc>(context).add(FeatchTaskList());
           return DashbordScreen();
         }
         return const LoginScreen();

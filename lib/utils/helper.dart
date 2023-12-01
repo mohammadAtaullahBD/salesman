@@ -30,15 +30,12 @@ String getDate(int index) {
 }
 
 void launchWaze(Cordinate cor) async {
-  final Uri url1 = Uri.parse('waze://?ll=${cor.lat},${cor.lon}&navigate=yes');
-  final Uri url2 = Uri.parse(
+  final Uri url = Uri.parse(
       'https://www.waze.com/ul?ll=${cor.lat},${cor.lon}&navigate=yes');
 
   try {
-    if (await canLaunchUrl(url1)) {
-      await launchUrl(url1);
-    } else if (await canLaunchUrl(url2)) {
-      await launchUrl(url2);
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url);
     }
   } catch (e) {
     // window.open('https://www.waze.com/ul?ll=${cor.lat},${cor.lon}&navigate=yes',

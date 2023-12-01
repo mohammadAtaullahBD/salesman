@@ -9,44 +9,46 @@ class UserLocationBloc extends Bloc<UserLocationEvent, UserLocationState> {
   UserLocationBloc() : super(UserLocationInitialState()) {
     on<UserLocationEvent>((event, emit) async {
       if (event is FetchUserLocation) {
-        WidgetsFlutterBinding.ensureInitialized();
         checkAndRequestLocationPermission();
         if (!(await FlutterBackgroundService().isRunning())) {
           _initializeService();
           FlutterBackgroundService().startService();
+          FlutterBackgroundService().invoke('setAsForeground');
         } else {
           FlutterBackgroundService().invoke('update');
         }
-
-        FlutterBackgroundService().invoke('setAsForeground');
       }
     });
   }
 }
 
 void checkAndRequestLocationPermission() async {
-  await Permission.notification.isDenied.then((value) {
-    if (value) {
-      Permission.notification.request();
-    }
-  });
-  await Permission.location.isDenied.then((value) {
-    if (value) {
-      Permission.location.request();
-    }
-  });
-  await Permission.locationAlways.isDenied.then((value) {
-    if (value) {
-      Permission.locationAlways.request();
-    }
-  });
+  PermissionStatus notificationStatus = await Permission.notification.status;
+
+  if (notificationStatus.isDenied) {
+    notificationStatus = await Permission.notification.request();
+  }
+
+  if (!notificationStatus.isGranted) {
+    checkAndRequestLocationPermission();
+  }
+
+  PermissionStatus locationStatus = await Permission.location.status;
+
+  if (locationStatus.isDenied) {
+    locationStatus = await Permission.location.request();
+  }
+  PermissionStatus locationAlwaysStatus =
+      await Permission.locationAlways.status;
+
+  if (locationAlwaysStatus.isDenied) {
+    locationAlwaysStatus = await Permission.locationAlways.request();
+  }
 }
 
 void _startLocationTracking() async {
   final GeolocatorPlatform geolocator = GeolocatorPlatform.instance;
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  prefs.getInt('userID');
-
   int? userID = prefs.getInt('userID');
   if (userID != null) {
     geolocator.getCurrentPosition().then((value) {
@@ -56,6 +58,10 @@ void _startLocationTracking() async {
       );
     });
   }
+}
+
+void stopForegroundService() {
+  FlutterBackgroundService().invoke('stopService');
 }
 
 void _initializeService() async {
@@ -94,7 +100,7 @@ void _onStart(ServiceInstance service) async {
     });
   }
 // stopService
-  service.on('stopService').listen((event) {
+  service.on('stopService').listen((event) async {
     service.stopSelf();
   });
 
@@ -107,7 +113,14 @@ void _onStart(ServiceInstance service) async {
 
   Timer.periodic(const Duration(seconds: 5), (timer) async {
     debugPrint('background service running');
-    _startLocationTracking();
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int? userID = prefs.getInt('userID');
+    if (userID != null) {
+      _startLocationTracking();
+    } else {
+      service.stopSelf();
+    }
     // TODO: set the stop condition by uncommenting this code.
     // if (8 < DateTime.now().hour && DateTime.now().hour < 20) {
     //   debugPrint('background service running');

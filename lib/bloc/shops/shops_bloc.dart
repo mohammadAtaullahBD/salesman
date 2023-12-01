@@ -9,8 +9,12 @@ class ShopsBloc extends Bloc<ShopsEvent, ShopsState> {
     on<ShopsEvent>((event, emit) async {
       emit(ShopsInitialState());
       if (event is LoadShopsEvent) {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+
+        int userID = prefs.getInt('userID')!;
         try {
-          final shops = await _shopsRepository.getShops(date: event.date);
+          final shops =
+              await _shopsRepository.getShops(date: event.date, id: userID);
           emit(ShopsLoadedState(shops));
         } catch (e) {
           emit(ShopsErrorState(e.toString()));

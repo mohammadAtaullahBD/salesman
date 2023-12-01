@@ -8,9 +8,11 @@ class TaskListBloc extends Bloc<TaskListEvent, TaskListState> {
   TaskListBloc() : super(TaskListInitial()) {
     on<TaskListEvent>((event, emit) async {
       if (event is FeatchTaskList) {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+
+        int userID = prefs.getInt('userID')!;
         try {
-          List<String?> taskList =
-              await _shopsRepository.getShopList(event.uID);
+          List<String?> taskList = await _shopsRepository.getShopList(userID);
           emit(TaskListFeached(taskList: taskList));
         } catch (e) {
           emit(TaskListFeachedError(

@@ -10,13 +10,13 @@ sealed class UserState extends Equatable {
 class UserInitialState extends UserState {}
 
 class UserLoadedState extends UserState {
-  final User user;
+  final int userID;
   const UserLoadedState({
-    required this.user,
+    required this.userID,
   });
 
   @override
-  List<Object> get props => [user];
+  List<Object> get props => [userID];
 }
 
 class UserErrorState extends UserState {
