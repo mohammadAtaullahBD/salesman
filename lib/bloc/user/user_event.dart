@@ -9,7 +9,7 @@ sealed class UserEvent extends Equatable {
 
 class ResetUserEvent extends UserEvent {}
 
-class FetchPreviousIfAvailableEvent extends UserEvent {}
+class FetchPreviousUserIfAvailableEvent extends UserEvent {}
 
 class FetchUserEvent extends UserEvent {
   final String email;

@@ -115,7 +115,9 @@ void _onStart(ServiceInstance service) async {
     if (userID != null) {
       _startLocationTracking(userID);
     } else {
+      debugPrint("background service stopping");
       service.stopSelf();
+      return;
     }
     // TODO: set the stop condition by uncommenting this code.
     // if (8 < DateTime.now().hour && DateTime.now().hour < 20) {

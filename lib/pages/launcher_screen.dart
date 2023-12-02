@@ -6,6 +6,9 @@ class LauncherScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Future.delayed(Duration.zero, () {
+      BlocProvider.of<UserBloc>(context).add(FetchPreviousUserIfAvailableEvent());
+    });
     return BlocBuilder<UserBloc, UserState>(
       buildWhen: (previous, current) => previous != current,
       builder: (context, state) {

@@ -8,7 +8,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   UserBloc() : super(UserInitialState()) {
     on<UserEvent>((event, emit) async {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      if (event is FetchPreviousIfAvailableEvent) {
+      if (event is FetchPreviousUserIfAvailableEvent) {
         int? preUserID = prefs.getInt('userID');
         if (preUserID != null) {
           emit(UserLoadedState(userID: preUserID));

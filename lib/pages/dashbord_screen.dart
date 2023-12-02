@@ -11,7 +11,7 @@ class DashbordScreen extends StatelessWidget {
       drawer: const DrawerWidget(),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+          padding: const EdgeInsets.only(left: 14.0, right: 14.0),
           child: ListView(
             children: [
               verticalSpace(),
@@ -32,54 +32,55 @@ class DashbordScreen extends StatelessWidget {
               ),
               verticalSpace(),
               BlocBuilder<TaskListBloc, TaskListState>(
-                  buildWhen: (previous, current) => previous != current,
-                  builder: (context, state) {
-                    if (state is TaskListFeached) {
-                      return ListView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: state.taskList.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return Card(
-                            child: ListTile(
-                              onTap: () {
-                                if (state.taskList[index] != null) {
-                                  BlocProvider.of<ShopsBloc>(context).add(
-                                    LoadShopsEvent(
-                                      date: state.taskList[index] ?? '',
+                buildWhen: (previous, current) => previous != current,
+                builder: (context, state) {
+                  if (state is TaskListFeached) {
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: state.taskList.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Card(
+                          child: ListTile(
+                            onTap: () {
+                              if (state.taskList[index] != null) {
+                                BlocProvider.of<ShopsBloc>(context).add(
+                                  LoadShopsEvent(
+                                    date: state.taskList[index] ?? '',
+                                  ),
+                                );
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => Shopsscreen(
+                                      date: getDate(index),
                                     ),
-                                  );
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (context) => Shopsscreen(
-                                        date: getDate(index),
-                                      ),
-                                    ),
-                                  );
-                                } else {
-                                  showToastMessage(
-                                    context,
-                                    'There is no task assigned for Day ${index + 1}',
-                                  );
-                                }
-                              },
-                              leading: const Icon(Icons.calendar_month),
-                              title: Text('Day ${index + 1}'),
-                              subtitle: Text(state.taskList[index] ?? ''),
-                            ),
-                          );
-                        },
-                      );
-                    } else if (state is TaskListFeachedError) {
-                      return Center(
-                        child: Text('Error: ${state.error}'),
-                      );
-                    } else {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
-                  }),
+                                  ),
+                                );
+                              } else {
+                                showToastMessage(
+                                  context,
+                                  'There is no task assigned for Day ${index + 1}',
+                                );
+                              }
+                            },
+                            leading: const Icon(Icons.calendar_month),
+                            title: Text('Day ${index + 1}'),
+                            subtitle: Text(state.taskList[index] ?? ''),
+                          ),
+                        );
+                      },
+                    );
+                  } else if (state is TaskListFeachedError) {
+                    return Center(
+                      child: Text('Error: ${state.error}'),
+                    );
+                  } else {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                },
+              ),
             ],
           ),
         ),

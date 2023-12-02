@@ -13,7 +13,7 @@ class Shopsscreen extends StatelessWidget {
         // appBar: AppBar(),
         drawer: const DrawerWidget(),
         body: Padding(
-          padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+          padding: const EdgeInsets.only(left: 14.0, right: 14.0),
           child: Column(
             children: [
               verticalSpace(),

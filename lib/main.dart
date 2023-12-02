@@ -10,28 +10,28 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (context) => UserBloc()..add(FetchPreviousIfAvailableEvent()),
-        ),
-        BlocProvider(
-          create: (context) => UserLocationBloc(),
-        ),
-        BlocProvider(
-          create: (context) => TaskListBloc(),
-        ),
-        BlocProvider(
-          create: (context) => ShopsBloc(),
-        ),
-      ],
-      child: MaterialApp(
-        navigatorKey: navigatorKey,
-        title: 'Flutter Demo',
-        theme: getTheme(),
-        debugShowCheckedModeBanner: false,
-        home: const LauncherScreen(),
-        routes: allRouts,
+    return MaterialApp(
+      navigatorKey: navigatorKey,
+      title: 'Flutter Demo',
+      theme: getTheme(),
+      debugShowCheckedModeBanner: false,
+      home: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) =>
+                UserBloc()..add(FetchPreviousUserIfAvailableEvent()),
+          ),
+          BlocProvider(
+            create: (context) => UserLocationBloc(),
+          ),
+          BlocProvider(
+            create: (context) => TaskListBloc(),
+          ),
+          BlocProvider(
+            create: (context) => ShopsBloc(),
+          ),
+        ],
+        child: const LauncherScreen(),
       ),
     );
   }

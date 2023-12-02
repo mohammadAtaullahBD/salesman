@@ -9,6 +9,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  bool _isClick = false;
   late TextEditingController _emailController;
   late TextEditingController _passController;
   final FocusNode _emailFocusNode = FocusNode();
@@ -57,13 +58,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Future.delayed(Duration.zero, () {
-      BlocProvider.of<UserBloc>(context).add(FetchPreviousIfAvailableEvent());
-    });
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
-          padding: const EdgeInsets.only(left: 30.0, right: 30.0),
+          padding: const EdgeInsets.only(left: 14.0, right: 14.0),
           height: height,
           decoration: const BoxDecoration(
             image: DecorationImage(
@@ -133,46 +131,76 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               verticalSpace(),
-              ElevatedButton(
-                onPressed: () {
-                  BlocProvider.of<UserBloc>(context).add(
-                    FetchUserEvent(
-                      email: _emailController.text,
-                      password: _passController.text,
+              _isClick
+                  ? ElevatedButton(
+                      onPressed: () {},
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateColor.resolveWith(
+                          (states) => Theme.of(context).colorScheme.primary,
+                        ),
+                        foregroundColor: MaterialStateColor.resolveWith(
+                          (states) => Theme.of(context).colorScheme.onPrimary,
+                        ),
+                        surfaceTintColor: MaterialStateColor.resolveWith(
+                          (states) => Theme.of(context).colorScheme.primary,
+                        ),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsetsDirectional.symmetric(
+                            vertical: 12.0),
+                        child: Center(
+                          child: Text(
+                            'Login',
+                            style: Theme.of(context)
+                                .textTheme
+                                .labelLarge
+                                ?.copyWith(color: whitePrimaryColor),
+                          ),
+                        ),
+                      ),
+                    )
+                  : ElevatedButton(
+                      onPressed: () {
+                        BlocProvider.of<UserBloc>(context).add(
+                          FetchUserEvent(
+                            email: _emailController.text,
+                            password: _passController.text,
+                          ),
+                        );
+                      },
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateColor.resolveWith(
+                          (states) => Theme.of(context).colorScheme.primary,
+                        ),
+                        foregroundColor: MaterialStateColor.resolveWith(
+                          (states) => Theme.of(context).colorScheme.onPrimary,
+                        ),
+                        surfaceTintColor: MaterialStateColor.resolveWith(
+                          (states) => Theme.of(context).colorScheme.primary,
+                        ),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsetsDirectional.symmetric(
+                            vertical: 12.0),
+                        child: Center(
+                          child: Text(
+                            'Login',
+                            style: Theme.of(context)
+                                .textTheme
+                                .labelLarge
+                                ?.copyWith(color: whitePrimaryColor),
+                          ),
+                        ),
+                      ),
                     ),
-                  );
-                },
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateColor.resolveWith(
-                    (states) => Theme.of(context).colorScheme.primary,
-                  ),
-                  foregroundColor: MaterialStateColor.resolveWith(
-                    (states) => Theme.of(context).colorScheme.onPrimary,
-                  ),
-                  surfaceTintColor: MaterialStateColor.resolveWith(
-                    (states) => Theme.of(context).colorScheme.primary,
-                  ),
-                ),
-                child: Padding(
-                  padding:
-                      const EdgeInsetsDirectional.symmetric(vertical: 12.0),
-                  child: Center(
-                    child: Text(
-                      'Login',
-                      style: Theme.of(context)
-                          .textTheme
-                          .labelLarge
-                          ?.copyWith(color: whitePrimaryColor),
-                    ),
-                  ),
-                ),
-              ),
               verticalSpace(),
               BlocListener<UserBloc, UserState>(
                 // listenWhen: (previous, current) => previous != current,
                 listener: (context, state) {
                   if (state is UserErrorState) {
-                    // Todo: is showToastMessage work?
+                    setState(() {
+                      _isClick = !_isClick;
+                    });
                     showToastMessage(context, 'Login: Wrong Information');
                   }
                 },
