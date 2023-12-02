@@ -29,6 +29,7 @@ export 'package:apps/bloc/shops/shops_bloc.dart';
 export 'package:apps/bloc/user_location/user_location_bloc.dart';
 export 'package:apps/bloc/user/user_bloc.dart';
 export 'package:apps/bloc/task_list/task_list_bloc.dart';
+// export 'package:apps/bloc/route/route_bloc.dart';
 
 // Models
 export 'package:apps/models/user_model.dart';

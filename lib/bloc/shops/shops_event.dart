@@ -7,6 +7,8 @@ sealed class ShopsEvent extends Equatable {
   List<Object> get props => [];
 }
 
+class ResetShopsEvent extends ShopsEvent{}
+
 class LoadShopsEvent extends ShopsEvent {
   final String date;
 

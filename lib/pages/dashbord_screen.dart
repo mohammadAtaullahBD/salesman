@@ -2,7 +2,7 @@ import 'package:apps/utils/importer.dart';
 
 class DashbordScreen extends StatelessWidget {
   DashbordScreen({Key? key}) : super(key: key);
-  static const route = '/dashbord';
+  // static const route = dashbordScreenRoute;
   final double width = getScreenWidth();
 
   @override
@@ -44,15 +44,10 @@ class DashbordScreen extends StatelessWidget {
                           child: ListTile(
                             onTap: () {
                               if (state.taskList[index] != null) {
-                                BlocProvider.of<ShopsBloc>(context).add(
-                                  LoadShopsEvent(
-                                    date: state.taskList[index] ?? '',
-                                  ),
-                                );
                                 Navigator.of(context).push(
                                   MaterialPageRoute(
                                     builder: (context) => Shopsscreen(
-                                      date: getDate(index),
+                                      date: state.taskList[index] ?? '',
                                     ),
                                   ),
                                 );

@@ -12,8 +12,9 @@ class ShopsInitialState extends ShopsState {}
 
 // loaded state
 class ShopsLoadedState extends ShopsState {
+  final String date;
   final List<Shop> shops;
-  const ShopsLoadedState(this.shops);
+  const ShopsLoadedState({required this.shops, required this.date});
 
   @override
   List<Object> get props => [shops];

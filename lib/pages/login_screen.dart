@@ -9,7 +9,6 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  bool _isClick = false;
   late TextEditingController _emailController;
   late TextEditingController _passController;
   final FocusNode _emailFocusNode = FocusNode();
@@ -131,35 +130,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               verticalSpace(),
-              _isClick
-                  ? ElevatedButton(
-                      onPressed: () {},
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStateColor.resolveWith(
-                          (states) => Theme.of(context).colorScheme.primary,
-                        ),
-                        foregroundColor: MaterialStateColor.resolveWith(
-                          (states) => Theme.of(context).colorScheme.onPrimary,
-                        ),
-                        surfaceTintColor: MaterialStateColor.resolveWith(
-                          (states) => Theme.of(context).colorScheme.primary,
-                        ),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsetsDirectional.symmetric(
-                            vertical: 12.0),
-                        child: Center(
-                          child: Text(
-                            'Login',
-                            style: Theme.of(context)
-                                .textTheme
-                                .labelLarge
-                                ?.copyWith(color: whitePrimaryColor),
-                          ),
-                        ),
-                      ),
-                    )
-                  : ElevatedButton(
+              ElevatedButton(
                       onPressed: () {
                         BlocProvider.of<UserBloc>(context).add(
                           FetchUserEvent(
@@ -179,7 +150,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           (states) => Theme.of(context).colorScheme.primary,
                         ),
                       ),
-                      child: Padding(
+                      child:  Padding(
                         padding: const EdgeInsetsDirectional.symmetric(
                             vertical: 12.0),
                         child: Center(
@@ -190,6 +161,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 .labelLarge
                                 ?.copyWith(color: whitePrimaryColor),
                           ),
+
                         ),
                       ),
                     ),
@@ -197,12 +169,7 @@ class _LoginScreenState extends State<LoginScreen> {
               BlocListener<UserBloc, UserState>(
                 // listenWhen: (previous, current) => previous != current,
                 listener: (context, state) {
-                  if (state is UserErrorState) {
-                    setState(() {
-                      _isClick = !_isClick;
-                    });
                     showToastMessage(context, 'Login: Wrong Information');
-                  }
                 },
                 child: const Text(''),
               ),

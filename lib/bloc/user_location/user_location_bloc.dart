@@ -14,8 +14,6 @@ class UserLocationBloc extends Bloc<UserLocationEvent, UserLocationState> {
           _initializeService();
           FlutterBackgroundService().startService();
           FlutterBackgroundService().invoke('setAsForeground');
-        } else {
-          FlutterBackgroundService().invoke('update');
         }
       }
     });
@@ -29,9 +27,9 @@ void checkAndRequestLocationPermission() async {
     notificationStatus = await Permission.notification.request();
   }
 
-  if (!notificationStatus.isGranted) {
-    checkAndRequestLocationPermission();
-  }
+  // if (!notificationStatus.isGranted) {
+  //   checkAndRequestLocationPermission();
+  // }
 
   PermissionStatus locationStatus = await Permission.location.status;
 
@@ -56,8 +54,10 @@ void _startLocationTracking(int userID) async {
   });
 }
 
-void stopForegroundService() {
-  FlutterBackgroundService().invoke('stopService');
+void stopForegroundService() async {
+  if(await FlutterBackgroundService().isRunning()) {
+    FlutterBackgroundService().invoke('stopService');
+  }
 }
 
 void _initializeService() async {
@@ -107,7 +107,11 @@ void _onStart(ServiceInstance service) async {
     }
   }
 
+  // TODO: change the timer 5s to 30s or 60s
   Timer.periodic(const Duration(seconds: 5), (timer) async {
+
+    // TODO: set the stop condition by uncommenting this code.
+    // if (8 < DateTime.now().hour && DateTime.now().hour < 20) {
     debugPrint('background service running');
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -119,12 +123,9 @@ void _onStart(ServiceInstance service) async {
       service.stopSelf();
       return;
     }
-    // TODO: set the stop condition by uncommenting this code.
-    // if (8 < DateTime.now().hour && DateTime.now().hour < 20) {
-    //   debugPrint('background service running');
-    //   _startLocationTracking();
     // } else {
-    //   FlutterBackgroundService().invoke('stopService');
+    // debugPrint("background service stopping");
+    // service.stopSelf();
     // }
 
     // service.invoke('update');

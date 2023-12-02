@@ -11,11 +11,13 @@ class ShopsBloc extends Bloc<ShopsEvent, ShopsState> {
       if (event is LoadShopsEvent) {
         SharedPreferences prefs = await SharedPreferences.getInstance();
 
-        int userID = prefs.getInt('userID')!;
         try {
-          final shops =
-              await _shopsRepository.getShops(date: event.date, id: userID);
-          emit(ShopsLoadedState(shops));
+          int? userID = prefs.getInt('userID');
+          if (userID != null) {
+            final shops =
+                await _shopsRepository.getShops(date: event.date, id: userID);
+            emit(ShopsLoadedState(shops: shops, date: event.date));
+          }
         } catch (e) {
           emit(ShopsErrorState(e.toString()));
         }

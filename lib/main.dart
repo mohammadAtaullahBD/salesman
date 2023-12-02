@@ -27,12 +27,10 @@ class MyApp extends StatelessWidget {
           BlocProvider(
             create: (context) => TaskListBloc(),
           ),
-          BlocProvider(
-            create: (context) => ShopsBloc(),
-          ),
         ],
         child: const LauncherScreen(),
       ),
+      // routes: allRouts,
     );
   }
 }
