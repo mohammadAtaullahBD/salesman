@@ -46,18 +46,14 @@ void checkAndRequestLocationPermission() async {
   }
 }
 
-void _startLocationTracking() async {
+void _startLocationTracking(int userID) async {
   final GeolocatorPlatform geolocator = GeolocatorPlatform.instance;
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  int? userID = prefs.getInt('userID');
-  if (userID != null) {
-    geolocator.getCurrentPosition().then((value) {
-      UserLocationRepository().sendCordinate(
-        6,
-        Cordinate(lat: value.latitude, lon: value.longitude),
-      );
-    });
-  }
+  geolocator.getCurrentPosition().then((value) {
+    UserLocationRepository().sendCordinate(
+      userID,
+      Cordinate(lat: value.latitude, lon: value.longitude),
+    );
+  });
 }
 
 void stopForegroundService() {
@@ -107,7 +103,7 @@ void _onStart(ServiceInstance service) async {
   if (service is AndroidServiceInstance) {
     if (await service.isForegroundService()) {
       service.setForegroundNotificationInfo(
-          title: 'Location', content: 'Location Cheaking');
+          title: 'Location', content: 'Location Checking');
     }
   }
 
@@ -117,7 +113,7 @@ void _onStart(ServiceInstance service) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int? userID = prefs.getInt('userID');
     if (userID != null) {
-      _startLocationTracking();
+      _startLocationTracking(userID);
     } else {
       service.stopSelf();
     }

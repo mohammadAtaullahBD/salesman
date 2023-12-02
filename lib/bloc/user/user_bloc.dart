@@ -29,6 +29,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
             password: event.password,
             deviceID: deviceId,
           );
+          prefs.remove('userID');
+          prefs.remove('userName');
           prefs.setInt('userID', user.id);
           prefs.setString('userName', user.name);
           emit(UserLoadedState(userID: user.id));
