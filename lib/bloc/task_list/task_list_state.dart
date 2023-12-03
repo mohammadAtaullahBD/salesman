@@ -12,6 +12,9 @@ final class TaskListInitial extends TaskListState {}
 class TaskListFeached extends TaskListState {
   final List<String?> taskList;
   const TaskListFeached({required this.taskList});
+
+  @override
+  List<Object> get props => [taskList];
 }
 
 final class TaskListFeachedError extends TaskListState {

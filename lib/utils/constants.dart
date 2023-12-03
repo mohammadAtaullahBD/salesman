@@ -2,6 +2,13 @@ import 'package:apps/utils/importer.dart';
 
 const String dbUrl = 'https://salesman.ipsitacomputersltd.com';
 
+// this will be used as notification channel id
+const notificationChannelId = 'my_foreground';
+const notificationChannelName = 'MY FOREGROUND SERVICE';
+
+// this will be used for notification id, So you can update your custom notification with this id.
+const notificationId = 888;
+
 const Color primaryColor = Color(0xFF4BBA7E);
 const Color secondaryColor = Color(0xFFDF8680);
 const Color blackPrimaryColor = Color(0xC71B1B1B);

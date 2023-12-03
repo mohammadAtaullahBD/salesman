@@ -131,45 +131,46 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               verticalSpace(),
               ElevatedButton(
-                      onPressed: () {
-                        BlocProvider.of<UserBloc>(context).add(
-                          FetchUserEvent(
-                            email: _emailController.text,
-                            password: _passController.text,
-                          ),
-                        );
-                      },
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStateColor.resolveWith(
-                          (states) => Theme.of(context).colorScheme.primary,
-                        ),
-                        foregroundColor: MaterialStateColor.resolveWith(
-                          (states) => Theme.of(context).colorScheme.onPrimary,
-                        ),
-                        surfaceTintColor: MaterialStateColor.resolveWith(
-                          (states) => Theme.of(context).colorScheme.primary,
-                        ),
-                      ),
-                      child:  Padding(
-                        padding: const EdgeInsetsDirectional.symmetric(
-                            vertical: 12.0),
-                        child: Center(
-                          child: Text(
-                            'Login',
-                            style: Theme.of(context)
-                                .textTheme
-                                .labelLarge
-                                ?.copyWith(color: whitePrimaryColor),
-                          ),
-
-                        ),
-                      ),
+                onPressed: () {
+                  BlocProvider.of<UserBloc>(context).add(
+                    FetchUserEvent(
+                      email: _emailController.text,
+                      password: _passController.text,
                     ),
+                  );
+                },
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateColor.resolveWith(
+                    (states) => Theme.of(context).colorScheme.primary,
+                  ),
+                  foregroundColor: MaterialStateColor.resolveWith(
+                    (states) => Theme.of(context).colorScheme.onPrimary,
+                  ),
+                  surfaceTintColor: MaterialStateColor.resolveWith(
+                    (states) => Theme.of(context).colorScheme.primary,
+                  ),
+                ),
+                child: Padding(
+                  padding:
+                      const EdgeInsetsDirectional.symmetric(vertical: 12.0),
+                  child: Center(
+                    child: Text(
+                      'Login',
+                      style: Theme.of(context)
+                          .textTheme
+                          .labelLarge
+                          ?.copyWith(color: whitePrimaryColor),
+                    ),
+                  ),
+                ),
+              ),
               verticalSpace(),
               BlocListener<UserBloc, UserState>(
                 // listenWhen: (previous, current) => previous != current,
                 listener: (context, state) {
+                  if (state is UserErrorState) {
                     showToastMessage(context, 'Login: Wrong Information');
+                  }
                 },
                 child: const Text(''),
               ),

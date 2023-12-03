@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:apps/utils/importer.dart';
 
@@ -11,6 +12,12 @@ class UserLocationBloc extends Bloc<UserLocationEvent, UserLocationState> {
       if (event is FetchUserLocation) {
         checkAndRequestLocationPermission();
         if (!(await FlutterBackgroundService().isRunning())) {
+          _initializeService();
+          FlutterBackgroundService().startService();
+          FlutterBackgroundService().invoke('setAsForeground');
+        } else {
+          FlutterBackgroundService().invoke('stopService');
+          await Future.delayed(const Duration(seconds: 10));
           _initializeService();
           FlutterBackgroundService().startService();
           FlutterBackgroundService().invoke('setAsForeground');
@@ -44,24 +51,54 @@ void checkAndRequestLocationPermission() async {
   }
 }
 
-void _startLocationTracking(int userID) async {
-  final GeolocatorPlatform geolocator = GeolocatorPlatform.instance;
+void _startLocationTracking({
+  required int userID,
+  required FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin,
+  required GeolocatorPlatform geolocator,
+}) async {
   geolocator.getCurrentPosition().then((value) {
     UserLocationRepository().sendCordinate(
       userID,
       Cordinate(lat: value.latitude, lon: value.longitude),
     );
+    // flutterLocalNotificationsPlugin.show(
+    //   notificationId,
+    //   'Location',
+    //   'Lat: ${value.latitude}, Lon: ${value.longitude}',
+    //   const NotificationDetails(
+    //     android: AndroidNotificationDetails(
+    //       notificationChannelId,
+    //       notificationChannelName,
+    //       icon: 'ic_bg_service_small',
+    //       ongoing: true,
+    //     ),
+    //   ),
+    // );
   });
 }
 
 void stopForegroundService() async {
-  if(await FlutterBackgroundService().isRunning()) {
+  if (await FlutterBackgroundService().isRunning()) {
     FlutterBackgroundService().invoke('stopService');
   }
 }
 
 void _initializeService() async {
   final service = FlutterBackgroundService();
+  const AndroidNotificationChannel channel = AndroidNotificationChannel(
+    notificationChannelId, // id
+    'MY FOREGROUND SERVICE', // title
+    description:
+        'This channel is used for important notifications.', // description
+    importance: Importance.high, // importance must be at low or higher level
+  );
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+
+  await flutterLocalNotificationsPlugin
+      .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>()
+      ?.createNotificationChannel(channel);
 
   await service.configure(
     iosConfiguration: IosConfiguration(
@@ -73,6 +110,10 @@ void _initializeService() async {
       autoStart: true,
       onStart: _onStart,
       isForegroundMode: true,
+      notificationChannelId: notificationChannelId,
+      initialNotificationTitle: 'Location',
+      initialNotificationContent: 'Initializing',
+      foregroundServiceNotificationId: notificationId,
     ),
   );
 }
@@ -87,6 +128,9 @@ Future<bool> _onIosBackground(ServiceInstance service) async {
 @pragma('vm:entry-point')
 void _onStart(ServiceInstance service) async {
   DartPluginRegistrant.ensureInitialized();
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+
   if (service is AndroidServiceInstance) {
     service.on('setAsForeground').listen((event) {
       service.setAsForegroundService();
@@ -107,17 +151,21 @@ void _onStart(ServiceInstance service) async {
     }
   }
 
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  int? userID;
   // TODO: change the timer 5s to 30s or 60s
   Timer.periodic(const Duration(seconds: 5), (timer) async {
-
     // TODO: set the stop condition by uncommenting this code.
     // if (8 < DateTime.now().hour && DateTime.now().hour < 20) {
     debugPrint('background service running');
-
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    int? userID = prefs.getInt('userID');
+    final GeolocatorPlatform geolocator = GeolocatorPlatform.instance;
+    userID = prefs.getInt('userID');
     if (userID != null) {
-      _startLocationTracking(userID);
+      _startLocationTracking(
+        userID: userID!,
+        flutterLocalNotificationsPlugin: flutterLocalNotificationsPlugin,
+        geolocator: geolocator,
+      );
     } else {
       debugPrint("background service stopping");
       service.stopSelf();
