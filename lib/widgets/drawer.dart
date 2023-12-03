@@ -5,10 +5,6 @@ class DrawerWidget extends StatelessWidget {
     super.key,
   });
 
-  Future<String?> _getID() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString('userName');
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,20 +34,15 @@ class DrawerWidget extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 20),
-                FutureBuilder(
-                    future: _getID(),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        return Text(
-                          snapshot.data ?? '',
+                Text(
+                  (BlocProvider.of<UserBloc>(context).state as UserLoadedState).name,
                           style: const TextStyle(
                             color: Color(0xFF4cb97e),
                             fontSize: 18,
                           ),
-                        );
-                      }
-                      return const Text('');
-                    })
+
+
+                    )
               ],
             ),
           ),
@@ -89,35 +80,35 @@ class DrawerWidget extends StatelessWidget {
           // const SizedBox(
           //   height: 10,
           // ),
-          // const MenuIeam(
+          // const MenuItem(
           //   menuName: 'Employees List',
           //   icons: Icons.man_2,
           // ),
           // const SizedBox(
           //   height: 10,
           // ),
-          // const MenuIeam(
+          // const MenuItem(
           //   menuName: 'Employees Task List',
           //   icons: Icons.task,
           // ),
           // const SizedBox(
           //   height: 10,
           // ),
-          // const MenuIeam(
+          // const MenuItem(
           //   menuName: 'Employees Daily Task',
           //   icons: Icons.list,
           // ),
           // const SizedBox(
           //   height: 10,
           // ),
-          // const MenuIeam(
+          // const MenuItem(
           //   menuName: 'Today Active Employees',
           //   icons: Icons.task_alt_rounded,
           // ),
           // const SizedBox(
           //   height: 10,
           // ),
-          // const MenuIeam(
+          // const MenuItem(
           //   menuName: 'Employees Map',
           //   icons: Icons.map,
           // ),

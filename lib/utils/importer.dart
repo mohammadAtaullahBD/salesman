@@ -26,7 +26,6 @@ export 'package:apps/repo/user_repo.dart';
 
 // Bloc
 export 'package:apps/bloc/shops/shops_bloc.dart';
-export 'package:apps/bloc/user_location/user_location_bloc.dart';
 export 'package:apps/bloc/user/user_bloc.dart';
 export 'package:apps/bloc/task_list/task_list_bloc.dart';
 // export 'package:apps/bloc/route/route_bloc.dart';

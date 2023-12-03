@@ -1,8 +1,8 @@
 import 'package:apps/utils/importer.dart';
 
-class Shopsscreen extends StatelessWidget {
+class ShopsScreen extends StatelessWidget {
   final String date;
-  const Shopsscreen({
+  const ShopsScreen({
     super.key,
     required this.date,
   });
@@ -10,19 +10,20 @@ class Shopsscreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
+    return BlocProvider(
+      create: (context) => ShopsBloc()
+        ..add(
+          LoadShopsEvent(
+            date: date,
+          ),
+        ),
       child: Scaffold(
-        // appBar: AppBar(),
-        drawer: const DrawerWidget(),
-        body: BlocProvider(
-          create: (context) => ShopsBloc()
-            ..add(
-              LoadShopsEvent(
-                date: date,
-              ),
-            ),
+        appBar: AppBar(
+          title: Text('Your Shop List:',style: Theme.of(context).textTheme.titleMedium,),
+        ),
+        body: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.only(left: 14.0, right: 14.0),
+            padding: const EdgeInsets.only(left: 6.0, right: 6.0),
             child: BlocBuilder<ShopsBloc, ShopsState>(
               buildWhen: (previous, current) => previous != current,
               builder: (context, state) {

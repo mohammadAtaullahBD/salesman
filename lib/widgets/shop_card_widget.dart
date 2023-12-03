@@ -154,7 +154,7 @@ class ShopCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: whitePrimaryColor,
+      // color: whitePrimaryColor,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20.0),
         side: BorderSide(color: Theme.of(context).colorScheme.primary),
