@@ -5,7 +5,7 @@ class UserRepository {
   Future<User> getUser({
     required String email,
     required String password,
-    required String deviceID,
+    required String? deviceID,
   }) async {
     Map<String, String> headers = {'Content-Type': 'application/json'};
     Uri url = Uri.parse('$dbUrl/api/user-login');
@@ -23,7 +23,7 @@ class UserRepository {
     throw Exception();
   }
 
-  String toJson(String email, String pass, String deviceID) {
+  String toJson(String email, String pass, String? deviceID) {
     return json.encode({
       'email': email,
       'password': pass,

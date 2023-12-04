@@ -18,6 +18,7 @@ export 'package:flutter_background_service_android/flutter_background_service_an
 // export 'package:location/location.dart' show Location, LocationData;
 export 'package:permission_handler/permission_handler.dart';
 export 'package:shared_preferences/shared_preferences.dart';
+export 'package:path_provider/path_provider.dart';
 
 // Repositorys
 export 'package:apps/repo/shops_repo.dart';

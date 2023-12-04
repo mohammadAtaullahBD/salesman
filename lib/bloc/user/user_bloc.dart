@@ -16,6 +16,14 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         String? preUserName = prefs.getString('userName');
         if (preUserID != null && preUserName != null) {
           emit(UserLoadedState(userID: preUserID, name: preUserName));
+        }else{
+          while (await FlutterBackgroundService().isRunning()) {
+            FlutterBackgroundService().invoke('stopService');
+          }
+          prefs.remove('userID');
+          prefs.remove('userName');
+          prefs.clear();
+          emit(UserInitialState());
         }
       }
       if (event is ResetUserEvent) {
@@ -27,10 +35,9 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         prefs.clear();
         emit(UserInitialState());
       }
-      // if(event is Us)
       if (event is FetchUserEvent) {
         try {
-          String deviceId = await getDeviceId() ?? 'Unable device ID';
+          String? deviceId = await getDeviceId();
           User user = await _userRepository.getUser(
             email: event.email,
             password: event.password,
