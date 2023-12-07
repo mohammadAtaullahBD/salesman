@@ -5,14 +5,10 @@ Future<void> main() async {
   runApp(const MyApp());
 }
 
-class MyApp extends StatefulWidget {
+class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
 
-class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -22,29 +18,8 @@ class _MyAppState extends State<MyApp> {
         theme: getTheme(),
         debugShowCheckedModeBanner: false,
         home: const LauncherScreen(),
+        // routes: allRouts,
       ),
-      // routes: allRouts,
     );
-  }
-
-  Future<void> clearCache() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    int? userID = prefs.getInt('userID');
-    if (userID == null) {
-      try {
-        Directory cacheDir = await getTemporaryDirectory();
-        if (cacheDir.existsSync()) {
-          cacheDir.deleteSync(recursive: true);
-        }
-      } catch (e) {
-        debugPrint('Error clearing cache: $e');
-      }
-    }
-  }
-
-  @override
-  void dispose() {
-    clearCache();
-    super.dispose();
   }
 }

@@ -73,7 +73,7 @@ class _LoginScreenState extends State<LoginScreen> {
             children: [
               verticalSpace(height: 0.2),
               // Logo
-              Center(child: Image.asset(ImagesUtils.logoImages)),
+              Center(child: Image.asset(ImagesUtils.logoImages,height: 100,)),
               verticalSpace(),
               Text(
                 'Log In',
@@ -140,6 +140,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   );
                 },
                 style: ButtonStyle(
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0), // Set your desired border radius here
+                    ),
+                  ),
                   backgroundColor: MaterialStateColor.resolveWith(
                     (states) => Theme.of(context).colorScheme.primary,
                   ),

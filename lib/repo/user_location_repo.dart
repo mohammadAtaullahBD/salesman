@@ -2,7 +2,7 @@ import 'package:apps/utils/importer.dart';
 
 class UserLocationRepository {
   // send current location
-  void sendCordinate(int userID, Cordinate cord) async {
+  void sendCoordinate(int userID, Coordinate cord) async {
     Map<String, String> headers = {'Content-Type': 'application/json'};
     Uri url = Uri.parse('$dbUrl/api/user-location/$userID');
     String body = toJson(cord);
@@ -10,15 +10,15 @@ class UserLocationRepository {
     if (response.statusCode == 200) {
       debugPrint('user $userID: location updated');
     } else {
-      debugPrint('location faild');
+      debugPrint('location failed');
     }
   }
 
-  String toJson(Cordinate cordinate) {
+  String toJson(Coordinate coordinate) {
     return json.encode(
       {
-        'latitude': cordinate.lat.toString(),
-        'longitude': cordinate.lon.toString(),
+        'latitude': coordinate.lat.toString(),
+        'longitude': coordinate.lon.toString(),
       },
     );
   }

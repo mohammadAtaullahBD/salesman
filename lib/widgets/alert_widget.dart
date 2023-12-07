@@ -2,12 +2,12 @@ import 'package:apps/utils/importer.dart';
 
 class AlertDialogWidget extends StatelessWidget {
   final String title;
-  final String massege;
+  final String message;
   final void Function() onPressed;
 
   const AlertDialogWidget({
     required this.title,
-    required this.massege,
+    required this.message,
     super.key,
     required this.onPressed,
   });
@@ -17,7 +17,7 @@ class AlertDialogWidget extends StatelessWidget {
     return Scaffold(
       body: AlertDialog(
         title: Text(title),
-        content: Text(massege),
+        content: Text(message),
         actions: [
           TextButton(
             onPressed: onPressed,

@@ -9,33 +9,35 @@ class TaskListBloc extends Bloc<TaskListEvent, TaskListState> {
 
   TaskListBloc() : super(TaskListInitial()) {
     on<TaskListEvent>((event, emit) async {
-      if (event is FeatchTaskList) {
+      if (event is FetchTaskList) {
         SharedPreferences prefs = await SharedPreferences.getInstance();
 
         int? userID = prefs.getInt('userID');
         try {
           if (userID != null) {
             List<String?> taskList = await _shopsRepository.getShopList(userID);
-            emit(TaskListFeached(taskList: taskList));
-            _timer ??= Timer.periodic(const Duration(seconds: 30), (timer) {
-              debugPrint('periodic FeatchTaskList');
-              add(FeatchTaskList());
+            if (taskList.length == 9) {
+              emit(TaskListFetched(taskList: taskList));
+            }else{
+              debugPrint('Data Fetch error');
+              throw Exception();
+            }
+            _timer ??= Timer.periodic(const Duration(minutes: 5), (timer) {
+              debugPrint('periodic FetchTaskList');
+              add(FetchTaskList());
             });
           }
         } catch (e) {
-          emit(TaskListFeachedError(
-            error: e.toString(),
+          emit(const TaskListFetchedError(
+            error: 'Connection lost!',
           ));
+          await Future.delayed(const Duration(seconds: 20));
+          add(FetchTaskList());
         }
       }
     });
   }
 
-  // @override
-  // void close() {
-  //   _timer?.cancel();
-  //    super.close();
-  // }
   @override
   Future<void> close() {
     _timer?.cancel();

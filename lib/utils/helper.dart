@@ -29,7 +29,7 @@ String getDate(int index) {
   return formattedDate;
 }
 
-void launchWaze(Cordinate cor) async {
+void launchWaze(Coordinate cor) async {
   final Uri url = Uri.parse(
       'https://www.waze.com/ul?ll=${cor.lat},${cor.lon}&navigate=yes');
 

@@ -9,116 +9,99 @@ part 'user_state.dart';
 class UserBloc extends Bloc<UserEvent, UserState> {
   final UserRepository _userRepository = UserRepository();
   UserBloc() : super(UserInitialState()) {
-    on<UserEvent>((event, emit) async {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      if (event is FetchPreviousUserIfAvailableEvent) {
-        int? preUserID = prefs.getInt('userID');
-        String? preUserName = prefs.getString('userName');
-        if (preUserID != null && preUserName != null) {
-          emit(UserLoadedState(userID: preUserID, name: preUserName));
-        }else{
-          while (await FlutterBackgroundService().isRunning()) {
-            FlutterBackgroundService().invoke('stopService');
-          }
-          prefs.remove('userID');
-          prefs.remove('userName');
-          prefs.clear();
-          emit(UserInitialState());
-        }
-      }
-      if (event is ResetUserEvent) {
-        while (await FlutterBackgroundService().isRunning()) {
-          FlutterBackgroundService().invoke('stopService');
-        }
-        prefs.remove('userID');
-        prefs.remove('userName');
-        prefs.clear();
-        emit(UserInitialState());
-      }
-      if (event is FetchUserEvent) {
-        try {
-          String? deviceId = await getDeviceId();
-          User user = await _userRepository.getUser(
-            email: event.email,
-            password: event.password,
-            deviceID: deviceId,
-          );
-          prefs.setInt('userID', user.id);
-          prefs.setString('userName', user.name);
-          emit(UserLoadedState(userID: user.id, name: user.name));
+    on<UserEvent>(
+      (event, emit) async {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
 
-          checkAndRequestLocationPermission();
-          if (!(await FlutterBackgroundService().isRunning())) {
-            await initializeService();
-            FlutterBackgroundService().startService();
-            FlutterBackgroundService().invoke('setAsForeground');
+        if (event is FetchPreviousUserIfAvailableEvent) {
+          debugPrint('FetchPreviousUserIfAvailableEvent');
+          int? preUserID = prefs.getInt('userID');
+          String? preUserName = prefs.getString('userName');
+          if (preUserID != null && preUserName != null) {
+            emit(UserLoadedState(userID: preUserID, name: preUserName));
+            FlutterBackgroundService().invoke('startLocationTracking');
           } else {
             FlutterBackgroundService().invoke('stopService');
-            await Future.delayed(const Duration(seconds: 5));
-            await initializeService();
+            emit(UserInitialState());
+          }
+        }
+
+        if (event is ResetUserEvent) {
+          debugPrint('ResetUserEvent');
+          FlutterBackgroundService().invoke('stopService');
+          prefs.remove('userID');
+          prefs.remove('userName');
+          emit(UserInitialState());
+        }
+
+        if (event is FetchUserEvent) {
+          debugPrint('FetchUserEvent');
+          try {
+            String? deviceId = await getDeviceId();
+            User user = await _userRepository.getUser(
+              email: event.email,
+              password: event.password,
+              deviceID: deviceId,
+            );
+            prefs.setInt('userID', user.id);
+            prefs.setString('userName', user.name);
+            emit(UserLoadedState(userID: user.id, name: user.name));
             FlutterBackgroundService().startService();
             FlutterBackgroundService().invoke('setAsForeground');
+            await checkAndRequestLocationPermission();
+            FlutterBackgroundService().invoke('startLocationTracking');
+          } catch (error) {
+            emit(UserErrorState(error: DateTime.now().toString()));
           }
-        } catch (error) {
-          emit(UserErrorState(error: DateTime.now().toString()));
         }
-      }
-    });
+      },
+    );
   }
 }
 
-void checkAndRequestLocationPermission() async {
-  PermissionStatus notificationStatus = await Permission.notification.status;
-
-  if (notificationStatus.isDenied) {
-    notificationStatus = await Permission.notification.request();
+Future<bool> checkAndRequestLocationPermission() async {
+  if (await Permission.notification.status.isDenied) {
+    await Permission.notification.request();
   }
 
-  // if (!notificationStatus.isGranted) {
-  //   checkAndRequestLocationPermission();
-  // }
-
-  PermissionStatus locationStatus = await Permission.location.status;
-
-  if (locationStatus.isDenied) {
-    locationStatus = await Permission.location.request();
+  if (await Permission.location.status.isDenied) {
+    await Permission.location.request();
   }
-  PermissionStatus locationAlwaysStatus =
-      await Permission.locationAlways.status;
 
-  if (locationAlwaysStatus.isDenied) {
-    locationAlwaysStatus = await Permission.locationAlways.request();
+  if (await Permission.locationAlways.status.isDenied) {
+    await Permission.locationAlways.request();
   }
+
+  return true;
 }
 
-void _startLocationTracking({
-  required int userID,
-  required FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin,
+void _startLocationTrackingInBackground({
+  required int? userID,
   required GeolocatorPlatform geolocator,
-}) async {
-  try {
-    geolocator.getCurrentPosition().then((value) {
-      UserLocationRepository().sendCordinate(
-        userID,
-        Cordinate(lat: value.latitude, lon: value.longitude),
-      );
-      // flutterLocalNotificationsPlugin.show(
-      //   notificationId,
-      //   'Location',
-      //   'Lat: ${value.latitude}, Lon: ${value.longitude}',
-      //   const NotificationDetails(
-      //     android: AndroidNotificationDetails(
-      //       notificationChannelId,
-      //       notificationChannelName,
-      //       icon: 'ic_bg_service_small',
-      //       ongoing: true,
-      //     ),
-      //   ),
-      // );
-    });
-  } catch (error) {
-    //
-  }
+  required ServiceInstance service,
+}) {
+  Timer.periodic(
+    const Duration(seconds: 60),
+    (timer) async {
+      try {
+        if (userID != null) {
+          geolocator.getCurrentPosition().then(
+                (value) {
+              UserLocationRepository().sendCoordinate(
+                userID,
+                Coordinate(lat: value.latitude, lon: value.longitude),
+              );
+            },
+          );
+        }else{
+          service.stopSelf();
+          timer.cancel();
+        }
+      } catch (error) {
+        //
+      }
+    },
+  );
 }
 
 Future<void> initializeService() async {
@@ -128,7 +111,7 @@ Future<void> initializeService() async {
     'MY FOREGROUND SERVICE', // title
     description:
         'This channel is used for important notifications.', // description
-    importance: Importance.high, // importance must be at low or higher level
+    importance: Importance.low, // importance must be at low or higher level
   );
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
@@ -156,8 +139,6 @@ Future<void> initializeService() async {
 @pragma('vm:entry-point')
 void _onStart(ServiceInstance service) async {
   DartPluginRegistrant.ensureInitialized();
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();
 
   if (service is AndroidServiceInstance) {
     service.on('setAsForeground').listen(
@@ -165,56 +146,36 @@ void _onStart(ServiceInstance service) async {
         service.setAsForegroundService();
       },
     );
-    service.on('setAsBackground').listen(
-      (event) {
-        service.setAsBackgroundService();
-      },
-    );
   }
 // stopService
   service.on('stopService').listen(
-    (event) async {
+    (event) {
       service.stopSelf();
     },
   );
-
-  if (service is AndroidServiceInstance) {
-    if (await service.isForegroundService()) {
-      service.setForegroundNotificationInfo(
-          title: 'Location', content: 'Location Checking');
-    }
-  }
-
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  int? userID = prefs.getInt('userID');
-  final GeolocatorPlatform geolocator = GeolocatorPlatform.instance;
-  // TODO: change the timer 5s to 30s or 60s
-  Timer.periodic(
-    const Duration(seconds: 5),
-    (timer) async {
-      // TODO: set the stop condition by uncommenting this code.
-      // if (8 < DateTime.now().hour && DateTime.now().hour < 20) {
-      debugPrint('background service running');
-      if (userID != null) {
-        _startLocationTracking(
-          userID: userID,
-          flutterLocalNotificationsPlugin: flutterLocalNotificationsPlugin,
-          geolocator: geolocator,
-        );
-      } else {
-        debugPrint("background service stopping");
-        service.stopSelf();
-        return;
+  service.on('startLocationTracking').listen(
+    (event) async {
+      if (service is AndroidServiceInstance) {
+        if (await service.isForegroundService()) {
+          service.setForegroundNotificationInfo(
+            title: 'Location',
+            content: 'Location Checking',
+          );
+        }
       }
-      // } else {
-      // debugPrint("background service stopping");
-      // service.stopSelf();
-      // }
-
-      // service.invoke('update');
-      // FlutterBackgroundService().invoke('setAsForeground');
-      // FlutterBackgroundService().invoke('setAsBackground');
-      // FlutterBackgroundService().startService();
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      int? userID = prefs.getInt('userID');
+      final GeolocatorPlatform geolocator = GeolocatorPlatform.instance;
+      debugPrint('background service running');
+      _startLocationTrackingInBackground(
+        userID: userID,
+        geolocator: geolocator,
+        service: service,
+      );
     },
   );
+
+// service.invoke('update');
+  // FlutterBackgroundService().invoke('setAsForeground');
+  // FlutterBackgroundService().startService();
 }

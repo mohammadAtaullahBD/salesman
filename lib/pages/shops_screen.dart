@@ -19,7 +19,16 @@ class ShopsScreen extends StatelessWidget {
         ),
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Your Shop List:',style: Theme.of(context).textTheme.titleMedium,),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.all(6.0),
+              child: Image.asset(ImagesUtils.logoImages),
+            ),
+          ],
+          title: Text(
+            'Your Shop List:',
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
         ),
         body: SafeArea(
           child: Padding(
@@ -30,6 +39,11 @@ class ShopsScreen extends StatelessWidget {
                 if (state is ShopsInitialState) {
                   return const Center(child: CircularProgressIndicator());
                 } else if (state is ShopsLoadedState) {
+                  if (state.shops == []) {
+                    return const Center(
+                      child: Text('There is no shop available.'),
+                    );
+                  }
                   return Column(
                     children: [
                       verticalSpace(),
@@ -79,8 +93,6 @@ class ShopsScreen extends StatelessWidget {
                       ),
                     ],
                   );
-                  // return Builder(builder: (context)=>Center());
-                  // ;
                 } else if (state is ShopsErrorState) {
                   return Center(
                     child: Text('Error: ${state.error}'),

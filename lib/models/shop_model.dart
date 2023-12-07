@@ -1,12 +1,12 @@
 import 'package:apps/utils/importer.dart';
 
 class Shop extends Equatable {
-  final int id;
+  final String? id;
   final String? name;
   final String? number;
   final String? status;
   final String? address;
-  final Cordinate cordinate;
+  final Coordinate coordinate;
 
   const Shop({
     required this.id,
@@ -14,22 +14,22 @@ class Shop extends Equatable {
     required this.number,
     required this.status,
     required this.address,
-    required this.cordinate,
+    required this.coordinate,
   });
 
   factory Shop.fromJson(Map<String, dynamic> json) {
     return Shop(
-      id: json['assign_by_shop']['id'],
+      id: json['assign_by_shop']['shop_code'],
       name: json['assign_by_shop']['name'],
       number: json['assign_by_shop']['number'],
       status: json['assign_by_shop']['status'],
       address: json['assign_by_shop']['address'],
-      cordinate: Cordinate(
+      coordinate: Coordinate(
         lat: double.parse(
-          json['assign_by_shop']['latitude'] ?? '23.742382288941503',
+          json['assign_by_shop']['latitude'] ?? '0',
         ),
         lon: double.parse(
-          json['assign_by_shop']['longitude'] ?? '90.38655512197339',
+          json['assign_by_shop']['longitude'] ?? '0',
         ),
       ),
     );
@@ -41,6 +41,6 @@ class Shop extends Equatable {
         number,
         status,
         address,
-        cordinate,
+        coordinate,
       ];
 }

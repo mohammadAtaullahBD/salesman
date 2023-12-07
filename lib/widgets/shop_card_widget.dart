@@ -51,7 +51,7 @@ class ShopCard extends StatelessWidget {
                               padding: const EdgeInsets.all(8.0),
                               child: Center(
                                 child: Text(
-                                  shop.name ?? '',
+                                  '${shop.name}',
                                   style: const TextStyle(fontSize: 16.0),
                                 ),
                               ),
@@ -80,7 +80,7 @@ class ShopCard extends StatelessWidget {
                               padding: const EdgeInsets.all(8.0),
                               child: Center(
                                 child: Text(
-                                  shop.address ?? '',
+                                  '${shop.address}',
                                   style: const TextStyle(fontSize: 16.0),
                                 ),
                               ),
@@ -109,7 +109,7 @@ class ShopCard extends StatelessWidget {
                               padding: const EdgeInsets.all(8.0),
                               child: Center(
                                 child: Text(
-                                  shop.number ?? '01700000000',
+                                  '${shop.number}',
                                   style: const TextStyle(fontSize: 16.0),
                                 ),
                               ),
@@ -131,7 +131,7 @@ class ShopCard extends StatelessWidget {
                           (states) => Theme.of(context).colorScheme.primary),
                     ),
                     onPressed: () {
-                      launchWaze(shop.cordinate);
+                      launchWaze(shop.coordinate?? const Coordinate(lat: 0, lon: 0));
                     },
                     child: const Text(
                       'view map',
@@ -185,10 +185,10 @@ class ShopCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(shop.name ?? '',
+                  Text('${shop.name}',
                       style: Theme.of(context).textTheme.bodyLarge),
                   verticalSpace(height: 0.01),
-                  Text(shop.address ?? ''),
+                  Text('${shop.address}'),
                   Text('Code: ${shop.id}'),
                 ],
               ),

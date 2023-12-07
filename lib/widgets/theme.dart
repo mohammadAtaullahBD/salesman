@@ -15,7 +15,7 @@ ThemeData getTheme() {
       bodyMedium: const TextStyle(fontSize: 14, color: blackPrimaryColor),
       bodySmall: const TextStyle(fontSize: 12, color: blackPrimaryColor),
       titleLarge: const TextStyle(
-          fontSize: 24, fontWeight: FontWeight.w600, color: blackPrimaryColor),
+          fontSize: 20, fontWeight: FontWeight.w400, color: blackPrimaryColor),
       titleMedium: const TextStyle(
           fontSize: 18, fontWeight: FontWeight.w400, color: blackPrimaryColor),
       titleSmall: const TextStyle(

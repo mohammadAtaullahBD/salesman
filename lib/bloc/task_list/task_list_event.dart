@@ -7,4 +7,4 @@ sealed class TaskListEvent extends Equatable {
   List<Object> get props => [];
 }
 
-final class FeatchTaskList extends TaskListEvent {}
+final class FetchTaskList extends TaskListEvent {}

@@ -1,9 +1,9 @@
 import 'package:apps/utils/importer.dart';
 
-class Cordinate extends Equatable {
+class Coordinate extends Equatable {
   final double lat;
   final double lon;
-  const Cordinate({
+  const Coordinate({
     required this.lat,
     required this.lon,
   });

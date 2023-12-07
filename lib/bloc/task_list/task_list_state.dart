@@ -9,15 +9,15 @@ sealed class TaskListState extends Equatable {
 
 final class TaskListInitial extends TaskListState {}
 
-class TaskListFeached extends TaskListState {
+class TaskListFetched extends TaskListState {
   final List<String?> taskList;
-  const TaskListFeached({required this.taskList});
+  const TaskListFetched({required this.taskList});
 
   @override
   List<Object> get props => [taskList];
 }
 
-final class TaskListFeachedError extends TaskListState {
+final class TaskListFetchedError extends TaskListState {
   final String error;
-  const TaskListFeachedError({required this.error});
+  const TaskListFetchedError({required this.error});
 }

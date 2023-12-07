@@ -17,7 +17,7 @@ class ShopsRepository {
         result['day_9'],
       ];
     } else {
-      throw Exception(res.reasonPhrase);
+      throw Exception('Connection lost!');
     }
   }
 
@@ -27,7 +27,7 @@ class ShopsRepository {
       List result = jsonDecode(res.body)['task'];
       return result.map((element) => Shop.fromJson(element)).toList();
     } else {
-      throw Exception(res.reasonPhrase);
+      throw Exception('Connection lose');
     }
   }
 }

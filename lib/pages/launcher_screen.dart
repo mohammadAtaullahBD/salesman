@@ -1,9 +1,23 @@
 import 'package:apps/utils/importer.dart';
 
-class LauncherScreen extends StatelessWidget {
+class LauncherScreen extends StatefulWidget {
   static const String route = '/launch';
   const LauncherScreen({super.key});
 
+  @override
+  State<LauncherScreen> createState() => _LauncherScreenState();
+}
+
+class _LauncherScreenState extends State<LauncherScreen> {
+  @override
+  void initState() {
+    initilize();
+    super.initState();
+  }
+  void initilize() async{
+    WidgetsFlutterBinding.ensureInitialized();
+    await initializeService();
+  }
   @override
   Widget build(BuildContext context) {
     Future.delayed(Duration.zero, () {
@@ -12,10 +26,14 @@ class LauncherScreen extends StatelessWidget {
     return BlocBuilder<UserBloc, UserState>(
       buildWhen: (previous, current) => previous != current,
       builder: (context, state) {
-        if (state is UserLoadedState) {
-          return const DashbordScreen();
+        switch(state) {
+          case UserLoadedState():
+            return const DashbordScreen();
+          case UserInitialState():
+          case UserErrorState():
+          default:
+          return const LoginScreen();
         }
-        return const LoginScreen();
       },
     );
   }

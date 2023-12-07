@@ -19,7 +19,8 @@ class ShopsBloc extends Bloc<ShopsEvent, ShopsState> {
             emit(ShopsLoadedState(shops: shops, date: event.date));
           }
         } catch (e) {
-          emit(ShopsErrorState(e.toString()));
+          debugPrint('error from shop bloc $e');
+          emit(const ShopsErrorState(error: 'Connection lost!'));
         }
       }
     });

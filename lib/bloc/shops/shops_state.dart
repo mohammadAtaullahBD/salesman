@@ -7,7 +7,7 @@ sealed class ShopsState extends Equatable {
   List<Object> get props => [];
 }
 
-// lodding or initial
+// loading or initial
 class ShopsInitialState extends ShopsState {}
 
 // loaded state
@@ -23,7 +23,7 @@ class ShopsLoadedState extends ShopsState {
 // error state
 class ShopsErrorState extends ShopsState {
   final String error;
-  const ShopsErrorState(this.error);
+  const ShopsErrorState({required this.error});
 
   @override
   List<Object> get props => [error];

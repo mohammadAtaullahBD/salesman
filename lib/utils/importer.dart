@@ -7,6 +7,7 @@ export 'dart:async';
 
 // Packages
 export 'package:flutter/material.dart';
+export 'package:flutter/widgets.dart';
 export 'package:flutter_bloc/flutter_bloc.dart';
 export 'package:http/http.dart';
 export 'package:equatable/equatable.dart';
@@ -18,9 +19,8 @@ export 'package:flutter_background_service_android/flutter_background_service_an
 // export 'package:location/location.dart' show Location, LocationData;
 export 'package:permission_handler/permission_handler.dart';
 export 'package:shared_preferences/shared_preferences.dart';
-export 'package:path_provider/path_provider.dart';
 
-// Repositorys
+// Repositories
 export 'package:apps/repo/shops_repo.dart';
 export 'package:apps/repo/user_location_repo.dart';
 export 'package:apps/repo/user_repo.dart';
@@ -34,13 +34,14 @@ export 'package:apps/bloc/task_list/task_list_bloc.dart';
 // Models
 export 'package:apps/models/user_model.dart';
 export 'package:apps/models/shop_model.dart';
-export 'package:apps/models/cordinate_model.dart';
+export 'package:apps/models/coordinate_model.dart';
 
 // Pages
 export 'package:apps/pages/launcher_screen.dart';
 export 'package:apps/pages/login_screen.dart';
 export 'package:apps/pages/dashbord_screen.dart';
 export 'package:apps/pages/shops_screen.dart';
+export 'package:apps/main.dart';
 
 // Widgets
 export 'package:apps/widgets/drawer.dart';

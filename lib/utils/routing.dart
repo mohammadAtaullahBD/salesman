@@ -1,12 +1,7 @@
 // import 'package:apps/utils/importer.dart';
-
-// const dashbordScreenRoute = '/dashbord';
-// const shopsScreenRoute = '/shops';
-// const loginRoute = '/login';
-
+//
+// const homeRoute = '/';
+//
 // Map<String, WidgetBuilder> allRouts = {
-//   // launcherRoute: (context) => const LauncherScreen(),
-//   loginRoute: (context) => const LoginScreen(),
-//   dashbordScreenRoute: (context) => DashbordScreen(),
-//   shopsScreenRoute: (context) => const Shopsscreen(),
+//   homeRoute: (context)=> const LauncherScreen(),
 // };

@@ -7,37 +7,31 @@ class DashbordScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => TaskListBloc()..add(FeatchTaskList()),
+      create: (context) => TaskListBloc()..add(FetchTaskList()),
       child: Scaffold(
         drawer: const DrawerWidget(),
         appBar: AppBar(
-          title: Text('Your Task List:',style: Theme.of(context).textTheme.titleMedium,),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.all(6.0),
+              child: Image.asset(ImagesUtils.logoImages),
+            ),
+          ],
+          title: Text(
+            'Your task list',
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
         ),
         body: SafeArea(
           child: Padding(
             padding: const EdgeInsets.only(left: 12.0, right: 12.0),
             child: ListView(
               children: [
-                // Row(
-                //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //   children: [
-                //     Image.asset(ImagesUtils.logoImages),
-                //     Builder(builder: (context) {
-                //       return InkWell(
-                //         onTap: () => Scaffold.of(context).openDrawer(),
-                //         child: Icon(
-                //           Icons.menu,
-                //           color: Theme.of(context).colorScheme.primary,
-                //         ),
-                //       );
-                //     }),
-                //   ],
-                // ),
                 verticalSpace(),
                 BlocBuilder<TaskListBloc, TaskListState>(
                   buildWhen: (previous, current) => previous != current,
                   builder: (context, state) {
-                    if (state is TaskListFeached) {
+                    if (state is TaskListFetched) {
                       return ListView.builder(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
@@ -61,14 +55,17 @@ class DashbordScreen extends StatelessWidget {
                                   );
                                 }
                               },
-                              leading: const Icon(Icons.calendar_month),
+                              leading: const Icon(
+                                Icons.calendar_month,
+                                color: primaryColor,
+                              ),
                               title: Text('Day ${index + 1}'),
                               subtitle: Text(state.taskList[index] ?? ''),
                             ),
                           );
                         },
                       );
-                    } else if (state is TaskListFeachedError) {
+                    } else if (state is TaskListFetchedError) {
                       return Center(
                         child: Text('Error: ${state.error}'),
                       );
