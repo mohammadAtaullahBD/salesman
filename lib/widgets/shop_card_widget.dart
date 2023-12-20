@@ -131,7 +131,7 @@ class ShopCard extends StatelessWidget {
                           (states) => Theme.of(context).colorScheme.primary),
                     ),
                     onPressed: () {
-                      launchWaze(shop.coordinate?? const Coordinate(lat: 0, lon: 0));
+                      launchWaze(shop.coordinate);
                     },
                     child: const Text(
                       'view map',
