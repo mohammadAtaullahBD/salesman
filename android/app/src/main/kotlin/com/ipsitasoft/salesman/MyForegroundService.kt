@@ -105,10 +105,11 @@ class MyForegroundService : Service() {
                             // Format the time with the device's locale
                             val dateFormat = SimpleDateFormat("hh:mm a", Locale.getDefault())
                             val formattedTime = dateFormat.format(Date(currentTime))
-                            val updatedNotification = builder.setContentText(
+                            val updatedNotification = builder
+                                .setContentText(
                                 // TODO: make the time dynamic
-                                "Location updated at $formattedTime."
-                            )
+                                "Location updated at $formattedTime.")
+                                .setSound(null)
                             notificationManager.notify(101, updatedNotification.build())
                         }
                         val response = client.newCall(request).execute()
